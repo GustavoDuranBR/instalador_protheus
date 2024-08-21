@@ -78,3 +78,7 @@ Desenvolvido por Gustavo Duran.
 ## Licença
 
 Este projeto está licenciado sob a Licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## Contato
+
+Se tiver dúvidas ou precisar de ajuda, entre em contato através do email gustavoduran22@gmail.com
