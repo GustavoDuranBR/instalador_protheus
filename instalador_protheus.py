@@ -124,7 +124,7 @@ exit_button.pack(pady=5, anchor=tk.W)
 # Informações do desenvolvedor e versão, alinhadas à esquerda junto com os botões
 dev_label = tk.Label(
     frame_buttons, 
-    text="Desenvolvedor: Gustavo Duran\nVersão: 1.0", 
+    text="Desenvolvedor: Gustavo Duran\nVersão: 1.2", 
     bg='#333333', 
     fg='#8bb7f7', 
     font=('Arial', 10,'bold','italic'), 
