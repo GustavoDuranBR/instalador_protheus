@@ -71,6 +71,30 @@ Instalador_Protheus/
 - **Clique em 'Base Congelada'**: Baixa a base congelada para a versão selecionada.
 - **Clique em 'Sair'**: Fecha o programa.
 
+## Configuração do `appserver.ini`
+
+Antes de executar o Protheus, você precisa editar o arquivo `appserver.ini` no seguinte campo:
+
+```
+DBServer=HOST_NAME_DA_SUA_MAQUINA
+```
+
+### Como Encontrar o Host Name da Sua Máquina
+
+Para encontrar o hostname da sua máquina:
+
+- **Windows**:
+  1. Abra o Prompt de Comando (cmd).
+  2. Digite `hostname` e pressione Enter.
+  3. O nome do seu computador será exibido.
+
+- **Linux/MacOS**:
+  1. Abra o Terminal.
+  2. Digite `hostname` e pressione Enter.
+  3. O nome do seu computador será exibido.
+
+Substitua `HOST_NAME_DA_SUA_MAQUINA` pelo hostname obtido.
+
 ## Autor
 
 Desenvolvido por Gustavo Duran.
