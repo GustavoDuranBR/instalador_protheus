@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, messagebox, scrolledtext
 from funcoes import download_protheus, download_base_congelada
-from gerar_appserver_ini import copiar_appserver_ini
+from arquivos_adicionais import copiar_appserver_ini, copiar_atualiar_rpo
+from opcoes_adicionais import open_additional_options
 
 def validate_selections(version=None, appserver=None, build=None):
     if version and (not version or version == "Selecione a versão"):
@@ -33,6 +34,13 @@ def on_baixar_appserver_ini_button_click():
         log_box.insert(tk.END, "Copiando o arquivo appserver.ini...\n")
         log_box.see(tk.END)
         copiar_appserver_ini(version, log_box)
+
+def on_baixar_atualizador_rpo_click():
+    version = version_var.get()
+    if validate_selections(version=version):
+        log_box.insert(tk.END, f"Copiando Atualizar_RPO_{version}.bat...\n")
+        log_box.see(tk.END)
+        copiar_atualiar_rpo(version, log_box)
 
 def on_base_congelada_button_click():
     version = version_var.get()
@@ -68,10 +76,11 @@ label.pack(pady=10)
 frame_buttons = tk.Frame(root, bg='#333333')
 frame_buttons.pack(side=tk.LEFT, fill=tk.Y, padx=10, pady=10)
 
-# Caixa de diálogo para log, maior e ajustada
+# Caixa de diálogo para log
 log_box = scrolledtext.ScrolledText(root, width=50, height=20, 
                                     bg='#222222', fg='#8bb7f7', state='normal')
 log_box.pack(side=tk.RIGHT, fill=tk.BOTH, padx=10, pady=10, expand=True)
+log_box.insert(tk.END, "Pronto para iniciar o download...\n")
 
 # Label e Seletor de versão
 version_label = tk.Label(frame_buttons, text="Selecione a versão do Protheus:", 
@@ -89,7 +98,7 @@ version_selector.pack(pady=5, anchor=tk.W)
 appserver_var = tk.StringVar()
 appserver_selector = ttk.Combobox(frame_buttons, 
                                   textvariable=appserver_var, 
-                                  values=["Harpia", "Lobo Guara", "Panthera Onça"], state="readonly")
+                                  values=["Harpia", "Panthera Onça"], state="readonly")
 appserver_selector.set("Selecione o AppServer")
 appserver_selector.pack(pady=5, anchor=tk.W)
 
@@ -97,12 +106,13 @@ appserver_selector.pack(pady=5, anchor=tk.W)
 build_var = tk.StringVar()
 build_selector = ttk.Combobox(frame_buttons, 
                               textvariable=build_var, 
-                              values=["Latest", "Next", "Published"], state="readonly")
+                              values=["Latest", "Published"], state="readonly")
 build_selector.set("Selecione a Build")
 build_selector.pack(pady=5, anchor=tk.W)
 
 # Botão de Download
-download_button = tk.Button(frame_buttons, text="Realizar Download", command=on_download_button_click)
+download_button = tk.Button(frame_buttons, text="Realizar Download", 
+                            command=on_download_button_click)
 download_button.pack(pady=5, anchor=tk.W)
 
 # Botão para Baixar AppServer.ini
@@ -111,11 +121,21 @@ baixar_ini_button = tk.Button(frame_buttons,
                               command=on_baixar_appserver_ini_button_click)
 baixar_ini_button.pack(pady=5, anchor=tk.W)
 
+# Botão para Baixar Atualizador RPO
+baixar_ini_button = tk.Button(frame_buttons, 
+                              text="Baixar Atualizador RPO", 
+                              command=on_baixar_atualizador_rpo_click)
+baixar_ini_button.pack(pady=5, anchor=tk.W)
 
 # Botão de Base Congelada
 base_congelada_button = tk.Button(frame_buttons, text="Base Congelada", 
                                   command=on_base_congelada_button_click)
 base_congelada_button.pack(pady=5, anchor=tk.W)
+
+# Botão Opções Adicionais
+additional_button = tk.Button(frame_buttons, text="Opções Adicionais", 
+                              command=lambda: open_additional_options(root))
+additional_button.pack(pady=5, anchor=tk.W)
 
 # Botão de Sair
 exit_button = tk.Button(frame_buttons, text="Sair", command=quit_app)
@@ -124,7 +144,7 @@ exit_button.pack(pady=5, anchor=tk.W)
 # Informações do desenvolvedor e versão, alinhadas à esquerda junto com os botões
 dev_label = tk.Label(
     frame_buttons, 
-    text="Desenvolvedor: Gustavo Duran\nVersão: 1.0", 
+    text="Desenvolvedor: Gustavo Duran\nVersão: 2.0", 
     bg='#333333', 
     fg='#8bb7f7', 
     font=('Arial', 10,'bold','italic'), 

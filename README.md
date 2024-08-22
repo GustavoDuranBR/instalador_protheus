@@ -1,32 +1,40 @@
 # Instalador Protheus
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 
-Este é um programa desenvolvido para facilitar o processo de instalação e configuração do Protheus, permitindo o download de arquivos essenciais, configuração do `appserver.ini`, e a criação de uma estrutura de diretórios de maneira automatizada.
+Este programa facilita a instalação e configuração do Protheus, automatizando o download de arquivos essenciais, configuração do `appserver.ini`, e a criação de diretórios necessários.
 
 ## Funcionalidades
 
-- **Realizar Download**: Baixa os arquivos necessários para a instalação do Protheus (AppServer, SmartClient, DBAccess, e SmartClientWebApp) de acordo com a versão, AppServer e Build selecionados.
-- **Baixar AppServer.ini**: Copia o arquivo `appserver.ini` correspondente à versão do Protheus selecionada, salvando-o no diretório apropriado.
-- **Base Congelada**: Baixa a base congelada correspondente à versão do Protheus escolhida.
-- **Criação Automática de Diretórios**: Cria automaticamente a estrutura de diretórios necessária para a instalação do Protheus.
+- **Realizar Download**: 
+  - O programa baixa os arquivos necessários para a instalação do Protheus, como AppServer, SmartClient, DBAccess, e SmartClientWebApp, conforme a versão, AppServer e Build selecionados.
+  - **Código Relevante**: `get_download_url` para construir URLs de download, `download_files` para realizar o download dos arquivos.
 
-## Requisitos
+- **Baixar AppServer.ini**: 
+  - Copia o arquivo `appserver.ini` correspondente à versão selecionada para o diretório apropriado.
+  - **Código Relevante**: `copiar_appserver_ini` realiza a cópia do arquivo `appserver.ini`.
 
-- **Python 3.11 ou superior**
-- **Bibliotecas Python**:
-  - `tkinter`: Interface gráfica
-  - `requests`: Para realizar os downloads dos arquivos
+- **Base Congelada**:
+  - Baixa a base congelada específica para a versão do Protheus escolhida.
+  - **Código Relevante**: `download_base_congelada` cuida do download da base congelada.
+
+- **Criação Automática de Diretórios**:
+  - Cria a estrutura de diretórios necessária para a instalação do Protheus.
+  - **Código Relevante**: `create_folder_structure` para criar a estrutura de diretórios.
+
+- **Atualização do RPO**:
+  - Copia o script para atualizar o RPO para o diretório de destino.
+  - **Código Relevante**: `copiar_atualiar_rpo` realiza a cópia do script de atualização do RPO.
 
 ## Estrutura do Projeto
 
-O projeto possui a seguinte estrutura de diretórios:
+O projeto está organizado da seguinte forma:
 
 ```
 Instalador_Protheus/
 │
-├── funcoes.py                # Funções principais do programa
+├── funcoes.py                # Funções principais do programa, como download e criação de diretórios
 ├── gerar_appserver_ini.py    # Função para copiar o arquivo appserver.ini
-├── instalador_protheus.py    # Arquivo principal que inicia a interface gráfica
+├── instalador_protheus.py    # Arquivo principal com a interface gráfica e a lógica do programa
 ├── icon.ico                  # Ícone do aplicativo
 ├── README.md                 # Documentação do projeto
 └── venv/                     # Ambiente virtual com dependências do projeto
@@ -34,66 +42,58 @@ Instalador_Protheus/
 
 ## Instruções de Instalação
 
-1. Clone este repositório:
-
+1. **Clone este repositório**:
    ```bash
    git clone https://github.com/seuusuario/Instalador_Protheus.git
    cd Instalador_Protheus
    ```
 
-2. Crie e ative um ambiente virtual:
-
+2. **Crie e ative um ambiente virtual**:
    ```bash
    python -m venv venv
    source venv/bin/activate  # Linux/MacOS
    venv\Scripts\activate     # Windows
    ```
 
-3. Instale as dependências:
-
+3. **Instale as dependências**:
    ```bash
    pip install -r requirements.txt
    ```
 
-4. Execute o programa:
-
+4. **Execute o programa**:
    ```bash
    python instalador_protheus.py
    ```
 
 ## Uso
 
-- **Selecione a Versão**: Escolha a versão do Protheus que deseja instalar.
-- **Selecione o AppServer**: Escolha o tipo de AppServer que deseja instalar (Harpia, Lobo Guara, ou Panthera Onça).
-- **Selecione a Build**: Escolha a build que deseja instalar (Latest, Next, ou Published).
+- **Selecione a Versão**: Escolha a versão do Protheus desejada.
+- **Selecione o AppServer**: Escolha o tipo de AppServer (Harpia, Lobo Guara, Panthera Onça).
+- **Selecione a Build**: Escolha a build (Latest, Next, Published).
 - **Clique em 'Realizar Download'**: Inicia o processo de download e criação de diretórios.
 - **Clique em 'Baixar AppServer.ini'**: Copia o arquivo `appserver.ini` para o diretório correto.
+- **Clique em 'Baixar Atualizador RPO'**: Copia o script de atualização do RPO específico para a versão selecionada.
 - **Clique em 'Base Congelada'**: Baixa a base congelada para a versão selecionada.
+- **Clique em 'Opções Adicionais'**: Acessa uma janela com opções de download adicionais e configurações extras.
 - **Clique em 'Sair'**: Fecha o programa.
 
 ## Configuração do `appserver.ini`
 
-Antes de executar o Protheus, você precisa editar o arquivo `appserver.ini` no seguinte campo:
+Após a instalação, edite o arquivo `appserver.ini` conforme as suas necessidades:
 
 ```
-DBServer=HOST_NAME_DA_SUA_MAQUINA
+DBServer=localhost
 ```
 
 ### Como Encontrar o Host Name da Sua Máquina
 
-Para encontrar o hostname da sua máquina:
-
 - **Windows**:
   1. Abra o Prompt de Comando (cmd).
   2. Digite `hostname` e pressione Enter.
-  3. O nome do seu computador será exibido.
 
 - **Linux/MacOS**:
   1. Abra o Terminal.
   2. Digite `hostname` e pressione Enter.
-  3. O nome do seu computador será exibido.
-
-Substitua `HOST_NAME_DA_SUA_MAQUINA` pelo hostname obtido.
 
 ## Autor
 
@@ -105,4 +105,4 @@ Este projeto está licenciado sob a Licença MIT. Veja o arquivo [LICENSE](LICEN
 
 ## Contato
 
-Se tiver dúvidas ou precisar de ajuda, entre em contato através do email gustavoduran22@gmail.com
+Para dúvidas ou ajuda, entre em contato por email: gustavoduran22@gmail.com

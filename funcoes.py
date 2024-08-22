@@ -23,6 +23,7 @@ def get_download_url(build, appserver):
     base_url_appserver = "https://arte.engpro.totvs.com.br/tec/appserver/"
     base_url_smartclient = "https://arte.engpro.totvs.com.br/tec/smartclient/"
     base_url_dbaccess = "https://arte.engpro.totvs.com.br/tec/dbaccess/windows/64/latest/dbaccess.zip"
+    base_url_dbapi = "https://arte.engpro.totvs.com.br/tec/dbaccess/windows/64/latest/dbapi.zip"
     base_url_smartclientwebapp = "https://arte.engpro.totvs.com.br/tec/smartclientwebapp/"
 
     appserver_map = {
@@ -41,6 +42,7 @@ def get_download_url(build, appserver):
         f"{base_url_appserver}{appserver_map[appserver]}/windows/64/{build_map[build]}/appserver.zip",
         f"{base_url_smartclient}{appserver_map[appserver]}/windows/64/{build_map[build]}/smartclient.zip",
         f"{base_url_dbaccess}",
+        f"{base_url_dbapi}",
         f"{base_url_smartclientwebapp}{appserver_map[appserver]}/windows/64/{build_map[build]}/smartclientwebapp.zip"
     ]
     return urls
