@@ -106,7 +106,7 @@ appserver_selector.pack(pady=5, anchor=tk.W)
 build_var = tk.StringVar()
 build_selector = ttk.Combobox(frame_buttons, 
                               textvariable=build_var, 
-                              values=["Latest", "Published"], state="readonly")
+                              values=["Latest", "Next", "Published"], state="readonly")
 build_selector.set("Selecione a Build")
 build_selector.pack(pady=5, anchor=tk.W)
 
