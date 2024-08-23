@@ -182,7 +182,11 @@ def download_protheus(version, appserver, build, log_box):
     
     update_log("Baixando DBAccess...")
     download_files(version, [download_urls[2]], log_box)  # DBAccess   
-    time.sleep(1)  
+    time.sleep(1)
+
+    update_log("Baixando DbApi...")
+    download_files(version, [download_urls[3]], log_box)  # DBAccess   
+    time.sleep(1)    
 
     update_log("Baixando SmartClient WebApp...")
     download_files(version, [download_urls[4]], log_box)  # SmartClient WebApp
