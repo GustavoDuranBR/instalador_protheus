@@ -62,10 +62,10 @@ root.iconbitmap("icon.ico")
 root.geometry("700x500")
 root.configure(bg='#333333')
 
-# Estilo para tema dark
+# Estilo para tema dark e botões padronizados
 style = ttk.Style()
 style.theme_use('default')
-style.configure('TButton', background='#666666', foreground='#8bb7f7', font=('Arial', 10))
+style.configure('TButton', background='#666666', foreground='#8bb7f7', font=('Arial', 10), width=20)
 style.map('TButton', background=[('active', '#555555')])
 
 label = tk.Label(root, text="Instalador Protheus", bg='#333333', 
@@ -111,34 +111,34 @@ build_selector.set("Selecione a Build")
 build_selector.pack(pady=5, anchor=tk.W)
 
 # Botão de Download
-download_button = tk.Button(frame_buttons, text="Realizar Download", 
+download_button = ttk.Button(frame_buttons, text="Realizar Download", 
                             command=on_download_button_click)
 download_button.pack(pady=5, anchor=tk.W)
 
 # Botão para Baixar AppServer.ini
-baixar_ini_button = tk.Button(frame_buttons, 
+baixar_ini_button = ttk.Button(frame_buttons, 
                               text="Baixar AppServer.ini", 
                               command=on_baixar_appserver_ini_button_click)
 baixar_ini_button.pack(pady=5, anchor=tk.W)
 
 # Botão para Baixar Atualizador RPO
-baixar_ini_button = tk.Button(frame_buttons, 
+baixar_rpo_button = ttk.Button(frame_buttons, 
                               text="Baixar Atualizador RPO", 
                               command=on_baixar_atualizador_rpo_click)
-baixar_ini_button.pack(pady=5, anchor=tk.W)
+baixar_rpo_button.pack(pady=5, anchor=tk.W)
 
 # Botão de Base Congelada
-base_congelada_button = tk.Button(frame_buttons, text="Base Congelada", 
+base_congelada_button = ttk.Button(frame_buttons, text="Base Congelada", 
                                   command=on_base_congelada_button_click)
 base_congelada_button.pack(pady=5, anchor=tk.W)
 
 # Botão Opções Adicionais
-additional_button = tk.Button(frame_buttons, text="Opções Adicionais", 
+additional_button = ttk.Button(frame_buttons, text="Opções Adicionais", 
                               command=lambda: open_additional_options(root))
 additional_button.pack(pady=5, anchor=tk.W)
 
 # Botão de Sair
-exit_button = tk.Button(frame_buttons, text="Sair", command=quit_app)
+exit_button = ttk.Button(frame_buttons, text="Sair", command=quit_app)
 exit_button.pack(pady=5, anchor=tk.W)
 
 # Informações do desenvolvedor e versão, alinhadas à esquerda junto com os botões
