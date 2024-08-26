@@ -51,7 +51,8 @@ def open_additional_options(root):
     style.configure('TButton', background='#666666', foreground='#8bb7f7', font=('Arial', 10, 'italic'))
     style.map('TButton', background=[('active', '#555555')])
 
-    label = tk.Label(additional_window, text="Opções Adicionais de Download", bg='#333333', fg='#8bb7f7', font=('Arial', 12, 'bold', 'italic'))
+    label = tk.Label(additional_window, text="Opções Adicionais de Download", bg='#333333', 
+                     fg='#8bb7f7', font=('Arial', 12, 'bold', 'italic'))
     label.pack(pady=10)
 
     frame_options = tk.Frame(additional_window, bg='#333333')
@@ -75,17 +76,21 @@ def open_additional_options(root):
     for idx, (label, (var, combo_var, _)) in enumerate(options.items()):
         tk.Checkbutton(frame_options, text=label, variable=var, **checkbox_style) \
             .grid(row=idx, column=0, sticky='w', pady=5)
-        version_combobox = ttk.Combobox(frame_options, textvariable=combo_var, values=options_dict[label], state="readonly")
+        version_combobox = ttk.Combobox(frame_options, textvariable=combo_var, values=options_dict[label], 
+                                        state="readonly")
         version_combobox.grid(row=idx, column=1, padx=10, pady=5, sticky='ew')
         combo_var.set("Selecione a Versão")
 
-    download_button = ttk.Button(frame_options, text="Download", style='TButton', command=lambda: iniciar_download(options, log_box))
+    download_button = ttk.Button(frame_options, text="Download", style='TButton', 
+                                 command=lambda: iniciar_download(options, log_box))
     download_button.grid(row=len(options) + 1, column=0, padx=10, pady=10, sticky='ew')
 
-    close_button = ttk.Button(frame_options, text="Fechar", style='TButton', command=additional_window.destroy)
+    close_button = ttk.Button(frame_options, text="Fechar", style='TButton', 
+                              command=additional_window.destroy)
     close_button.grid(row=len(options) + 1, column=1, padx=10, pady=10, sticky='ew')
 
-    log_box = scrolledtext.ScrolledText(additional_window, width=50, height=20, bg='#222222', fg='#8bb7f7', state='normal')
+    log_box = scrolledtext.ScrolledText(additional_window, width=50, height=20, 
+                                        bg='#222222', fg='#8bb7f7', state='normal')
     log_box.pack(side=tk.RIGHT, fill=tk.BOTH, padx=10, pady=10, expand=True)
     log_box.insert(tk.END, "Pronto para iniciar o download...\n")
 
@@ -136,13 +141,6 @@ def iniciar_download(options, log_box):
         else:
             status = "Não Selecionado"
             update_log(f"{label}: {status}")
-
-    if extract_var.get():
-        update_log("Iniciando a extração dos arquivos...")
-        for file_name in downloaded_files:
-            file_path = f"C:\\TOTVS\\Download\\Download_Protheus\\{file_name}"
-            extract_files(file_path, log_box)  # Chama a função extract_files existente
-        update_log("Extração concluída.")
 
     update_log("Todos os downloads foram concluídos.")
 
