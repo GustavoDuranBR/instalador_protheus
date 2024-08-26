@@ -9,8 +9,8 @@ base_urls = {
     "AppServer": "https://arte.engpro.totvs.com.br/tec/appserver/panthera_onca/windows/64/builds/",
     "DbAccess": "https://arte.engpro.totvs.com.br/tec/dbaccess/windows/64/builds/",
     "SmartClient": "https://arte.engpro.totvs.com.br/tec/smartclient/harpia/windows/64/builds/",
-    "SmartClientWebApp": f"https://arte.engpro.totvs.com.br/tec/smartclientwebapp/panthera_onca/windows/64/builds/",
-    "Web-Agent": f"https://arte.engpro.totvs.com.br/tec/web-agent/windows/64/builds/"
+    "SmartClientWebApp": "https://arte.engpro.totvs.com.br/tec/smartclientwebapp/panthera_onca/windows/64/builds/",
+    "Web-Agent": "https://arte.engpro.totvs.com.br/tec/web-agent/windows/64/builds/"
 }
 
 def get_versions(url):
@@ -42,14 +42,10 @@ def open_additional_options(root):
     additional_window.geometry("700x400")
     additional_window.configure(bg='#333333')
 
-    # Obter a posição atual da janela principal
     root_x = root.winfo_x()
     root_y = root.winfo_y()
-
-    # Posicionar a janela adicional com base na posição da janela principal
     additional_window.geometry(f"+{root_x + 50}+{root_y + 50}")
 
-    # Configurações de estilo
     style = ttk.Style()
     style.theme_use('default')
     style.configure('TButton', background='#666666', foreground='#8bb7f7', font=('Arial', 10, 'italic'))
@@ -93,13 +89,12 @@ def open_additional_options(root):
     log_box.pack(side=tk.RIGHT, fill=tk.BOTH, padx=10, pady=10, expand=True)
     log_box.insert(tk.END, "Pronto para iniciar o download...\n")
 
-    # Tornar a janela adicional modal
     additional_window.transient(root)
     additional_window.grab_set()
     root.wait_window(additional_window)
 
 def iniciar_download(options, log_box):
-    total_steps = sum(1 for selected_var, _, _ in options.values() if selected_var.get()) * 2 + 2  # Contagem das etapas
+    total_steps = sum(1 for selected_var, _, _ in options.values() if selected_var.get()) * 2 + 2
     current_step = 0
 
     def update_log(message):
@@ -107,15 +102,13 @@ def iniciar_download(options, log_box):
         current_step += 1
         log_box.insert(tk.END, f"[{current_step}/{total_steps}] {message}\n")
         log_box.see(tk.END)
-        log_box.update_idletasks()  # Atualiza o log imediatamente
+        log_box.update_idletasks()
 
-    # Verifica se pelo menos uma versão foi selecionada
     for label, (selected_var, version_var, _) in options.items():
         if selected_var.get() and version_var.get() == "Selecione a Versão":
             messagebox.showwarning("Erro de Seleção", f"Por favor, selecione a versão para {label}.")
             return
 
-    # Verifica se pelo menos uma opção foi marcada
     if not any(var.get() for var, _, _ in options.values()):
         messagebox.showwarning("Erro de Seleção", "Por favor, marque pelo menos uma das opções de download.")
         return
@@ -129,28 +122,65 @@ def iniciar_download(options, log_box):
             status = "Selecionado"
             version = version_var.get()
             if label == "DbAccess":
-                # Download do arquivo principal e do dbapi.zip para DbAccess
                 urls = [
                     f"{base_urls[label]}{version}/{label.lower()}.zip",
                     f"{base_urls[label]}{version}/dbapi.zip"
                 ]
                 for url in urls:
                     update_log(f"{label}: {status}, Versão: {version}, URL: {url}")
-                    realizar_download(url, f"C:\\TOTVS\\Download\\Download_Protheus\\{os.path.basename(url)}")
+                    realizar_download(url, f"C:\\TOTVS\\Download\\Download_Protheus\\{os.path.basename(url)}", log_box)
             else:
                 url = f"{base_urls[label]}{version}/{label.lower()}.zip"
                 update_log(f"{label}: {status}, Versão: {version}, URL: {url}")
-                realizar_download(url, f"C:\\TOTVS\\Download\\Download_Protheus\\{label}_{version}.zip")
+                realizar_download(url, f"C:\\TOTVS\\Download\\Download_Protheus\\{label}_{version}.zip", log_box)
         else:
             status = "Não Selecionado"
             update_log(f"{label}: {status}")
 
+    if extract_var.get():
+        update_log("Iniciando a extração dos arquivos...")
+        for file_name in downloaded_files:
+            file_path = f"C:\\TOTVS\\Download\\Download_Protheus\\{file_name}"
+            extract_files(file_path, log_box)  # Chama a função extract_files existente
+        update_log("Extração concluída.")
+
     update_log("Todos os downloads foram concluídos.")
 
-def realizar_download(url, destino):
-    response = requests.get(url)
-    with open(destino, 'wb') as file:
-        file.write(response.content)
+def realizar_download(url, destino, log_box):
+    try:
+        response = requests.get(url, stream=True)
+        response.raise_for_status()
+
+        total_size = int(response.headers.get('content-length', 0))
+        downloaded_size = 0
+
+        # Inicializa a mensagem de progresso
+        progress_message = f"Baixando {os.path.basename(destino)}: 0 KB de {total_size / 1024:.2f} KB"
+        log_box.insert(tk.END, progress_message)
+        log_box.see(tk.END)
+        log_box.update_idletasks()
+
+        with open(destino, "wb") as file:
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    file.write(chunk)
+                    downloaded_size += len(chunk)
+
+                    # Atualiza a linha de progresso
+                    log_box.delete('end-1c linestart', 'end-1c lineend')
+                    progress_message = f"\rBaixando {os.path.basename(destino)}: {downloaded_size / 1024:.2f} KB de {total_size / 1024:.2f} KB"
+                    log_box.insert(tk.END, progress_message)
+                    log_box.see(tk.END)
+                    log_box.update_idletasks()
+
+        log_box.insert(tk.END, f"\nDownload de {os.path.basename(destino)} concluído.\n")
+        log_box.see(tk.END)
+    except requests.exceptions.RequestException as e:
+        log_box.insert(tk.END, f"Erro ao baixar {os.path.basename(destino)}: {str(e)}\n")
+        log_box.see(tk.END)
+    except Exception as e:
+        log_box.insert(tk.END, f"Ocorreu um erro inesperado ao baixar {os.path.basename(destino)}: {str(e)}\n")
+        log_box.see(tk.END)
 
 # Obter versões para cada URL
 options_dict = {key: get_versions(url) for key, url in base_urls.items()}
