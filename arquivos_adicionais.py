@@ -10,6 +10,8 @@ def copiar_appserver_ini(version, log_box):
         source_dir = "AppServer_ini_2210"
     elif version == "12.1.2310":
         source_dir = "AppServer_ini_2310"
+    elif version == "12.1.2410":
+        source_dir = "AppServer_ini_2410"
     else:
         log_box.insert(tk.END, "Versão selecionada não reconhecida!\n")
         log_box.see(tk.END)
@@ -19,7 +21,7 @@ def copiar_appserver_ini(version, log_box):
     ini_file = os.path.join(source_dir, "appserver.ini")
 
     # Caminho de destino
-    dest_dir = f'C:\\TOTVS\\Protheus\\bin\\AppServer'
+    dest_dir = f'C:\\TOTVS\\Protheus_{version}\\bin\\AppServer'
     dest_file = os.path.join(dest_dir, "appserver.ini")
 
     # Criar diretório de destino se não existir
@@ -41,6 +43,8 @@ def copiar_atualiar_rpo(version, log_box):
         source_dir = "Atualizar_RPO\\RPO_12.1.2210\\"
     elif version == "12.1.2310":
         source_dir = "Atualizar_RPO\\RPO_12.1.2310\\"
+    elif version == "12.1.2410":
+        source_dir = "Atualizar_RPO\\RPO_12.1.2410\\"
     else:
         log_box.insert(tk.END, "Versão selecionada não reconhecida!\n")
         log_box.see(tk.END)

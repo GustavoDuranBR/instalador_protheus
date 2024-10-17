@@ -6,26 +6,30 @@ from tkinter import ttk, scrolledtext, messagebox
 
 # URLs base para download e obtenção de versões
 base_urls = {
-    "AppServer": "https://arte.engpro.totvs.com.br/tec/appserver/panthera_onca/windows/64/builds/",
-    "DbAccess": "https://arte.engpro.totvs.com.br/tec/dbaccess/windows/64/builds/",
-    "SmartClient": "https://arte.engpro.totvs.com.br/tec/smartclient/harpia/windows/64/builds/",
-    "SmartClientWebApp": "https://arte.engpro.totvs.com.br/tec/smartclientwebapp/panthera_onca/windows/64/builds/",
-    "Web-Agent": "https://arte.engpro.totvs.com.br/tec/web-agent/windows/64/builds/"
+    "AppServer": "https://arte.engpro.totvs.com.br/tec/appserver/{}/windows/64/builds/",
+    "SmartClientWebApp": "https://arte.engpro.totvs.com.br/tec/smartclientwebapp/{}/windows/64/builds/",
+}
+
+build_mapping = {
+    "Panthera Onça": "panthera_onca",
+    "Harpia": "harpia"
 }
 
 def get_versions(url):
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    rows = soup.select('tr.file')
-    versions = []
-    for row in rows:
-        version_tag = row.select_one('td:nth-child(2) span.name')
-        if version_tag:
-            version_name = version_tag.get_text(strip=True)
-            versions.append(version_name)
-        else:
-            print("Elemento de versão não encontrado na linha:", row.prettify())
-    return versions
+    try:
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        rows = soup.select('tr.file')
+        versions = []
+        for row in rows:
+            version_tag = row.select_one('td:nth-child(2) span.name')
+            if version_tag:
+                version_name = version_tag.get_text(strip=True)
+                versions.append(version_name)
+        return versions
+    except Exception as e:
+        print(f"Erro ao obter versões de {url}: {str(e)}")
+        return []
 
 def verificar_e_criar_diretorio():
     base_directory = "C:\\TOTVS\\Download\\Download_Protheus"
@@ -65,6 +69,14 @@ def open_additional_options(root):
         'selectcolor': '#333333'
     }
 
+    # Adicionar a combobox para selecionar a build (Panthera ou Harpia)
+    selected_build = tk.StringVar(value="Panthera Onça")
+    build_label = tk.Label(frame_options, text="Selecione a Build:", bg='#333333', fg='#ffffff', font=('Arial', 10, 'italic'))
+    build_label.grid(row=0, column=0, padx=10, pady=5, sticky='w')
+    build_combobox = ttk.Combobox(frame_options, textvariable=selected_build, values=["Panthera Onça", "Harpia"], state="readonly")
+    build_combobox.grid(row=0, column=1, padx=10, pady=5, sticky='ew')
+
+    # Variáveis e opções de download
     options = {
         "AppServer": (tk.BooleanVar(), tk.StringVar(), []),
         "DbAccess": (tk.BooleanVar(), tk.StringVar(), []),
@@ -73,16 +85,32 @@ def open_additional_options(root):
         "Web-Agent": (tk.BooleanVar(), tk.StringVar(), [])
     }
 
-    for idx, (label, (var, combo_var, _)) in enumerate(options.items()):
-        tk.Checkbutton(frame_options, text=label, variable=var, **checkbox_style) \
-            .grid(row=idx, column=0, sticky='w', pady=5)
-        version_combobox = ttk.Combobox(frame_options, textvariable=combo_var, values=options_dict[label], 
-                                        state="readonly")
+    # Função para preencher a combobox de versão quando o checkbox for marcado
+    def on_option_selected(option, selected_var, version_var, combo_box, build_var):
+        if selected_var.get():
+            build = build_mapping.get(build_var.get(), build_var.get()).lower()
+            url = base_urls[option].format(build) if '{}' in base_urls[option] else base_urls[option]
+            versions = get_versions(url)
+            if versions:
+                combo_box['values'] = versions
+                version_var.set(versions[0])
+            else:
+                messagebox.showwarning("Erro", f"Não foi possível obter as versões de {option}.")
+        else:
+            version_var.set("Selecione a Versão")
+            combo_box['values'] = []
+
+    # Adicionando as opções de download com checkboxes e comboboxes
+    for idx, (label, (selected_var, version_var, _)) in enumerate(options.items(), start=1):
+        tk.Checkbutton(frame_options, text=label, variable=selected_var, **checkbox_style).grid(row=idx, column=0, sticky='w', pady=5)
+        version_combobox = ttk.Combobox(frame_options, textvariable=version_var, values=[], state="readonly")
         version_combobox.grid(row=idx, column=1, padx=10, pady=5, sticky='ew')
-        combo_var.set("Selecione a Versão")
+        version_var.set("Selecione a Versão")
+        selected_var.trace('w', lambda *args, label=label, var=selected_var, version=version_var, combo=version_combobox, build=selected_build: 
+                           on_option_selected(label, var, version, combo, build))
 
     download_button = ttk.Button(frame_options, text="Download", style='TButton', 
-                                 command=lambda: iniciar_download(options, log_box))
+                                 command=lambda: iniciar_download(options, log_box, selected_build))
     download_button.grid(row=len(options) + 1, column=0, padx=10, pady=10, sticky='ew')
 
     close_button = ttk.Button(frame_options, text="Fechar", style='TButton', 
@@ -98,7 +126,7 @@ def open_additional_options(root):
     additional_window.grab_set()
     root.wait_window(additional_window)
 
-def iniciar_download(options, log_box):
+def iniciar_download(options, log_box, build_var):
     total_steps = sum(1 for selected_var, _, _ in options.values() if selected_var.get()) * 2 + 2
     current_step = 0
 
@@ -122,25 +150,17 @@ def iniciar_download(options, log_box):
     update_log(log_message)
     update_log("Iniciando downloads...")
 
+    build = build_mapping.get(build_var.get(), build_var.get()).lower()
+
     for label, (selected_var, version_var, _) in options.items():
         if selected_var.get():
-            status = "Selecionado"
             version = version_var.get()
-            if label == "DbAccess":
-                urls = [
-                    f"{base_urls[label]}{version}/{label.lower()}.zip",
-                    f"{base_urls[label]}{version}/dbapi.zip"
-                ]
-                for url in urls:
-                    update_log(f"{label}: {status}, Versão: {version}, URL: {url}")
-                    realizar_download(url, f"C:\\TOTVS\\Download\\Download_Protheus\\{os.path.basename(url)}", log_box)
-            else:
-                url = f"{base_urls[label]}{version}/{label.lower()}.zip"
-                update_log(f"{label}: {status}, Versão: {version}, URL: {url}")
-                realizar_download(url, f"C:\\TOTVS\\Download\\Download_Protheus\\{label}_{version}.zip", log_box)
-        else:
-            status = "Não Selecionado"
-            update_log(f"{label}: {status}")
+            file_name = f"{label.lower()}_{version}.zip"
+            url = base_urls[label].format(build) + version
+            destino = f"C:\\TOTVS\\Download\\Download_Protheus\\{file_name}"
+            
+            update_log(f"Baixando {label} - Versão {version}...")
+            realizar_download(url, destino, log_box)
 
     update_log("Todos os downloads foram concluídos.")
 
@@ -152,7 +172,6 @@ def realizar_download(url, destino, log_box):
         total_size = int(response.headers.get('content-length', 0))
         downloaded_size = 0
 
-        # Inicializa a mensagem de progresso
         progress_message = f"Baixando {os.path.basename(destino)}: 0 KB de {total_size / 1024:.2f} KB"
         log_box.insert(tk.END, progress_message)
         log_box.see(tk.END)
@@ -164,9 +183,8 @@ def realizar_download(url, destino, log_box):
                     file.write(chunk)
                     downloaded_size += len(chunk)
 
-                    # Atualiza a linha de progresso
-                    log_box.delete('end-1c linestart', 'end-1c lineend')
                     progress_message = f"\rBaixando {os.path.basename(destino)}: {downloaded_size / 1024:.2f} KB de {total_size / 1024:.2f} KB"
+                    log_box.delete('end-1c linestart', 'end-1c lineend')
                     log_box.insert(tk.END, progress_message)
                     log_box.see(tk.END)
                     log_box.update_idletasks()
@@ -179,6 +197,3 @@ def realizar_download(url, destino, log_box):
     except Exception as e:
         log_box.insert(tk.END, f"Ocorreu um erro inesperado ao baixar {os.path.basename(destino)}: {str(e)}\n")
         log_box.see(tk.END)
-
-# Obter versões para cada URL
-options_dict = {key: get_versions(url) for key, url in base_urls.items()}

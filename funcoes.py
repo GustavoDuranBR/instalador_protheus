@@ -1,5 +1,4 @@
 import os
-import winshell
 from win32com.client import Dispatch
 import zipfile
 import requests
@@ -10,9 +9,9 @@ def create_folder_structure(version, log_box):
     base_directory = f"C:\\TOTVS"
     directories = [
         os.path.join(base_directory, f"{version}", "Apo"),
-        os.path.join(base_directory, "Protheus", "bin"),
-        os.path.join(base_directory, "Protheus", "bin", "Appserver"),
-        os.path.join(base_directory, "Protheus", "bin", "SmartClient"),
+        os.path.join(base_directory, f"Protheus_{version}", "bin"),
+        os.path.join(base_directory, f"Protheus_{version}", "bin", "Appserver"),
+        os.path.join(base_directory, f"Protheus_{version}", "bin", "SmartClient"),
         os.path.join(base_directory, f"{version}","Protheus_Data"),
         os.path.join(base_directory, "TotvsDBAccess")
     ]
@@ -109,11 +108,11 @@ def create_shortcut(file_path, shortcut_name, additional_parameters, log_box):
     log_box.see(tk.END)
 
 def create_appserver_shortcut(log_box):
-    appserver_path = r"C:\\TOTVS\\Protheus\bin\Appserver\\appserver.exe"
+    appserver_path = r"C:\\TOTVS\\Protheus_\bin\Appserver\\appserver.exe"
     create_shortcut(appserver_path, "appserver.exe - Atalho", "-console", log_box)
 
 def create_smartclient_shortcut(log_box):
-    smartclient_path = r"C:\\TOTVS\\Protheus\\bin\\SmartClient\\smartclient.exe"
+    smartclient_path = r"C:\\TOTVS\\Protheus_\\bin\\SmartClient\\smartclient.exe"
     create_shortcut(smartclient_path, "smartclient.exe - Atalho", " -m", log_box)
 
 def create_dbaccess_shortcut(log_box):
@@ -123,11 +122,11 @@ def create_dbaccess_shortcut(log_box):
 def extract_files(version, log_box):
     base_directory = f"C:\\TOTVS\\Download\\{version}"
     extraction_map = {
-        "appserver.zip": r"C:\\TOTVS\\Protheus\\bin\\Appserver",
-        "dbaccess.zip": r"C:\\TOTVS\\TotvsDBAccess",
-        "dbapi.zip": r"C:\\TOTVS\\Protheus\\bin\\Appserver",
-        "smartclient.zip": r"C:\\TOTVS\\Protheus\\bin\\SmartClient",
-        "smartclientwebapp.zip": r"C:\\TOTVS\\Protheus\\bin\\SmartClient"
+        "appserver.zip": f"C:\\TOTVS\\Protheus__{version}\\bin\\Appserver",
+        "dbaccess.zip": f"C:\\TOTVS\\TotvsDBAccess",
+        "dbapi.zip": f"C:\\TOTVS\\Protheus__{version}\\bin\\Appserver",
+        "smartclient.zip": f"C:\\TOTVS\\Protheus__{version}\\bin\\SmartClient",
+        "smartclientwebapp.zip": f"C:\\TOTVS\\Protheus__{version}\\bin\\SmartClient"
     }
 
     for file_name, dest_dir in extraction_map.items():
@@ -203,6 +202,8 @@ def download_base_congelada(version, log_box):
         url = "https://arte.engpro.totvs.com.br/engenharia/base_congelada/protheus/bra/12.1.2210/exp_com_dic/latest/mssql_bak.zip"
     elif version == "12.1.2310":
         url = "https://arte.engpro.totvs.com.br/engenharia/base_congelada/protheus/bra/12.1.2310/exp_com_dic/latest/mssql_bak.zip"
+    elif version == "12.1.2410":
+        url = "https://arte.engpro.totvs.com.br/engenharia/base_congelada/protheus/bra/12.1.2410/exp_com_dic/latest/mssql_bak.zip"
     else:
         log_box.insert(tk.END, "Versão inválida selecionada.\n")
         log_box.see(tk.END)

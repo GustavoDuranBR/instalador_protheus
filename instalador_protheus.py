@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, messagebox, scrolledtext
-from funcoes import download_protheus, download_base_congelada
-from arquivos_adicionais import copiar_appserver_ini, copiar_atualiar_rpo
-from opcoes_adicionais import open_additional_options
+from funcoes import *
+from arquivos_adicionais import *
+from opcoes_adicionais import *
 
 def validate_selections(version=None, appserver=None, build=None):
     if version and (not version or version == "Selecione a versão"):
@@ -90,7 +90,7 @@ version_label.pack(pady=2, anchor=tk.W)
 version_var = tk.StringVar()
 version_selector = ttk.Combobox(frame_buttons, 
                                 textvariable=version_var, 
-                                values=["12.1.2210", "12.1.2310"], state="readonly")
+                                values=["12.1.2210", "12.1.2310", "12.1.2410"], state="readonly")
 version_selector.set("Selecione a versão")
 version_selector.pack(pady=5, anchor=tk.W)
 
@@ -144,7 +144,7 @@ exit_button.pack(pady=5, anchor=tk.W)
 # Informações do desenvolvedor e versão, alinhadas à esquerda junto com os botões
 dev_label = tk.Label(
     frame_buttons, 
-    text="Desenvolvedor: Gustavo Duran\nVersão: 2.1", 
+    text="Desenvolvedor: Gustavo Duran\nVersão: 2.2", 
     bg='#333333', 
     fg='#8bb7f7', 
     font=('Arial', 10,'bold','italic'), 
