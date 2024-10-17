@@ -130,9 +130,9 @@ def extract_files(version, log_box):
     extraction_map = {
         "appserver.zip": f"C:\\TOTVS\\Protheus_{version}\\bin\\Appserver",
         "dbaccess.zip": f"C:\\TOTVS\\TotvsDBAccess",
-        "dbapi.zip": f"C:\\TOTVS\\Protheus_{version}\\bin\\Appserver",
+        "dbapi.zip": f"C:\\TOTVS\\TotvsDBAccess",
         "smartclient.zip": f"C:\\TOTVS\\Protheus_{version}\\bin\\SmartClient",
-        "smartclientwebapp.zip": f"C:\\TOTVS\\Protheus_{version}\\bin\\SmartClient",
+        "smartclientwebapp.zip": f"C:\\TOTVS\\Protheus_{version}\\bin\\Appserver",
         #"protheus_data.zip": f"C:\\TOTVS\\{version}\\Protheus_Data"
     }
 
