@@ -79,10 +79,10 @@ def open_additional_options(root):
     # Variáveis e opções de download
     options = {
         "AppServer": (tk.BooleanVar(), tk.StringVar(), []),
-        "DbAccess": (tk.BooleanVar(), tk.StringVar(), []),
-        "SmartClient": (tk.BooleanVar(), tk.StringVar(), []),
+        #"DbAccess": (tk.BooleanVar(), tk.StringVar(), []),
+        #"SmartClient": (tk.BooleanVar(), tk.StringVar(), []),
         "SmartClientWebApp": (tk.BooleanVar(), tk.StringVar(), []),
-        "Web-Agent": (tk.BooleanVar(), tk.StringVar(), [])
+        #"Web-Agent": (tk.BooleanVar(), tk.StringVar(), [])
     }
 
     # Função para preencher a combobox de versão quando o checkbox for marcado
@@ -155,13 +155,17 @@ def iniciar_download(options, log_box, build_var):
     for label, (selected_var, version_var, _) in options.items():
         if selected_var.get():
             version = version_var.get()
-            file_name = f"{label.lower()}_{version}.zip"
-            url = base_urls[label].format(build) + version
-            destino = f"C:\\TOTVS\\Download\\Download_Protheus\\{file_name}"
-            
+            if label == "AppServer":
+                file_name = "appserver.zip"
+            elif label == "SmartClientWebApp":
+                file_name = "smartclientwebapp.zip"
+            url = base_urls[label].format(build) + f"{version}/{file_name}"
+            build_dir = f"C:\\TOTVS\\Download\\Download_Protheus\\{build}"
+            if not os.path.exists(build_dir):
+                os.makedirs(build_dir)
+            destino = os.path.join(build_dir, file_name)            
             update_log(f"Baixando {label} - Versão {version}...")
             realizar_download(url, destino, log_box)
-
     update_log("Todos os downloads foram concluídos.")
 
 def realizar_download(url, destino, log_box):
