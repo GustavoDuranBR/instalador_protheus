@@ -25,6 +25,13 @@ Este programa facilita a instalação e configuração do Protheus, automatizand
   - Copia o script para atualizar o RPO para o diretório de destino.
   - **Código Relevante**: `copiar_atualiar_rpo` realiza a cópia do script de atualização do RPO.
 
+---
+### Documentação de Configurações
+
+Para mais informações sobre as configurações de diretórios e como configurar corretamente o sistema, consulte a [documentação de configurações](docs/CONFIGURACOES_DIRETORIOS.md).
+
+---
+
 ## Estrutura do Projeto
 
 O projeto está organizado da seguinte forma:

@@ -4,3 +4,4 @@ build/
 dist/
 setup_inno_instalador_protheus.iss
 instalador_protheus.spec
+.vscode/
