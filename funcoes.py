@@ -4,6 +4,7 @@ import zipfile
 import requests
 import tkinter as tk
 import subprocess
+import py7zr
 
 def create_folder_structure(version, log_box):
     base_directory = f"C:\\TOTVS"
@@ -12,7 +13,7 @@ def create_folder_structure(version, log_box):
         os.path.join(base_directory, f"Protheus_{version}", "bin"),
         os.path.join(base_directory, f"Protheus_{version}", "bin", "Appserver"),
         os.path.join(base_directory, f"Protheus_{version}", "bin", "SmartClient"),
-        os.path.join(base_directory, f"{version}", "Protheus_Data"),
+        #os.path.join(base_directory, f"{version}", "Protheus_Data"),
         os.path.join(base_directory, "TotvsDBAccess")
     ]
     for directory in directories:
@@ -135,7 +136,8 @@ def extract_files(version, log_box):
         "dbapi.zip": f"C:\\TOTVS\\TotvsDBAccess",
         "smartclient.zip": f"C:\\TOTVS\\Protheus_{version}\\bin\\SmartClient",
         "smartclientwebapp.zip": f"C:\\TOTVS\\Protheus_{version}\\bin\\Appserver",
-        "web-agent.zip": f"C:\\TOTVS\\Download\\{version}\\web-agent"
+        "web-agent.zip": f"C:\\TOTVS\\Download\\{version}\\web-agent",
+        "protheus_data.zip": f"C:\\TOTVS\\{version}"  
     }
 
     for file_name, dest_dir in extraction_map.items():
@@ -143,32 +145,44 @@ def extract_files(version, log_box):
         os.makedirs(dest_dir, exist_ok=True)  # Garante que o diretório existe
 
         if os.path.exists(zip_path):
-            log_box.insert(tk.END, f"Verificando {file_name}...\n")
-            log_box.see(tk.END)
+            log_box.insert("end", f"Verificando {file_name}...\n")
+            log_box.see("end")
 
             if os.path.getsize(zip_path) > 0:
                 try:
-                    log_box.insert(tk.END, f"Extraindo {file_name} para {dest_dir}...\n")
-                    log_box.see(tk.END)
+                    if file_name == "protheus_data.zip":
+                        # Lógica específica para protheus_data.zip com py7zr
+                        log_box.insert("end", f"Extraindo {file_name} para {dest_dir} com py7zr...\n")
+                        log_box.see("end")
 
-                    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                        zip_ref.extractall(dest_dir)
+                        with py7zr.SevenZipFile(zip_path, 'r') as archive:
+                            archive.extractall(path=dest_dir)
 
-                    log_box.insert(tk.END, f"Extração de {file_name} concluída.\n")
-                    log_box.see(tk.END)
+                        log_box.insert("end", f"Extração de {file_name} concluída.\n")
+                        log_box.see("end")
+                    else:
+                        # Lógica padrão para arquivos ZIP comuns
+                        log_box.insert("end", f"Extraindo {file_name} para {dest_dir}...\n")
+                        log_box.see("end")
 
-                    if file_name == "web-agent.zip":
-                        install_web_agent(log_box, version)  # Ordem corrigida
-                
+                        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                            zip_ref.extractall(dest_dir)
+
+                        log_box.insert("end", f"Extração de {file_name} concluída.\n")
+                        log_box.see("end")
+
                 except zipfile.BadZipFile:
-                    log_box.insert(tk.END, f"Erro: {file_name} não é um arquivo ZIP válido.\n")
-                    log_box.see(tk.END)
+                    log_box.insert("end", f"Erro: {file_name} não é um arquivo ZIP válido.\n")
+                    log_box.see("end")
+                except Exception as e:
+                    log_box.insert("end", f"Erro ao extrair {file_name}: {str(e)}\n")
+                    log_box.see("end")
             else:
-                log_box.insert(tk.END, f"Erro: {file_name} está vazio ou corrompido.\n")
-                log_box.see(tk.END)
+                log_box.insert("end", f"Erro: {file_name} está vazio ou corrompido.\n")
+                log_box.see("end")
         else:
-            log_box.insert(tk.END, f"Arquivo {file_name} não encontrado para extração.\n")
-        log_box.see(tk.END)
+            log_box.insert("end", f"Arquivo {file_name} não encontrado para extração.\n")
+            log_box.see("end")
 
 def install_web_agent(log_box, version):
     base_directory = f"C:\\TOTVS\\Download\\{version}"
